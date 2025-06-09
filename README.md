@@ -1,66 +1,88 @@
-# Quantium starter repo
+# quantium-starter-repo
 
 
-```
-# 🍽️ Soul Foods - Pink Morsel Sales Data Processing
+```markdown
+# 🧁 Pink Morsel Sales Visualiser
 
-This project processes and formats transaction data from Soul Foods' Morsel product line. The goal is to extract and analyze **Pink Morsel** sales across different regions and dates, and output a clean dataset for visualization or further analysis.
+This project analyzes and visualizes sales data for Soul Foods' Pink Morsels product line using Python and Dash.
+
+---
+
+## 📊 Purpose
+
+Soul Foods wants to answer a key business question:
+
+> Were sales higher before or after the Pink Morsel price increase on January 15, 2021?
+
+This project filters and formats raw sales data, and provides a visual dashboard to clearly answer that question.
+
+---
 
 ## 📁 Project Structure
 
 ```
 
-/workspace/
-│
+workspace/
 ├── data/
 │   ├── daily\_sales\_data\_0.csv
 │   ├── daily\_sales\_data\_1.csv
-│   └── daily\_sales\_data\_2.csv
-│
-├── formatted\_sales\_data.csv   # Final output file
-├── main.py                    # Main script to process data
-└── README.md                  # This file
+│   ├── daily\_sales\_data\_2.csv
+│   └── formatted\_sales\_data.csv    # Cleaned sales data for Pink Morsels
+├── main.py                         # Dash app to visualize sales trends
+├── README.md
 
 ````
 
-## 📌 Task Overview
+---
 
-1. Load three raw CSV files containing morsel sales data.
-2. Filter for rows where `product == "Pink Morsel"`.
-3. Calculate `Sales = quantity * price`.
-4. Keep only relevant columns: `Sales`, `date`, and `region`.
-5. Output the cleaned dataset to a new CSV file.
+## ⚙️ How It Works
 
-## 🛠️ How to Run
+1. Data Processing
+   - Filters raw sales records to only include **Pink Morsels**
+   - Computes daily total sales using `sales = quantity * price`
+   - Exports the cleaned dataset to `formatted_sales_data.csv`
 
-1. **Install dependencies** (if using Replit Shell):
-   ```bash
-   pip install pandas
+2. Dash Visualization
+   - Line chart showing **daily sales trends**
+   - Highlights price change date (**January 15, 2021**)
+
+---
+
+## 📦 Requirements
+
+Install project dependencies:
+
+```bash
+pip install pandas dash plotly
 ````
 
-2. Run the script:
+---
 
-   ```bash
-   python main.py
-   ```
+## 🚀 Run the App
 
-3. **Output**: The processed data will be saved in `formatted_sales_data.csv`.
+In your terminal, from the root folder:
 
-## 📊 Output Format
+```bash
+python3 main.py
+```
 
-| Sales | date       | region |
-| ----- | ---------- | ------ |
-| 120   | 2024-02-01 | West   |
-| 300   | 2024-02-02 | South  |
+Then open your browser and go to: [http://localhost:8050](http://localhost:8050)
 
-## 💡 Notes
+---
 
-* Only "Pink Morsel" product sales are retained.
-* Make sure the raw CSV files are placed in the `/data` folder.
-* File paths in `main.py` are hardcoded to match this structure.
+## 📝 Outcome
+
+With this dashboard, stakeholders at Soul Foods can easily **compare sales before and after the price increase and make informed business decisions.
+
+---
+
+## 👤 Author
+
+* GitHub: [azukauteh](https://github.com/azukauteh)
 
 ```
 
 ---
 
 
+```
