@@ -1,59 +1,44 @@
-import pandas as pd
-import os
 import csv
-from typing import List
+import os
 
+DATA_DIRECTORY = "./data"
+OUTPUT_FILE_PATH = "./data/formatted_sales_data.csv"
 
-def load_csv_files(data_dir: str) -> List[pd.DataFrame]:
-    """
-    Load and filter CSV files for Pink Morsel sales.
-    Args:
-        data_dir (str): Path to the folder containing CSV files.
-        Returns:
-        List[pd.DataFrame]: List of filtered DataFrames.
-    """
-    data_frames = []
-    for file_name in os.listdir(data_dir):
-        if file_name.endswith('.csv'):
-            file_path = os.path.join(data_dir, file_name)
-            df = pd.read_csv(file_path)
+""" Open the output file"""
+with open(OUTPUT_FILE_PATH, "w", newline="") as output_file:
+    
+    """ Write CSV header"""
+    writer = csv.writer(output_file)
 
-            # Filter only Pink Morsels
-            pink_morsels = df[df['product'] == 'Pink Morsel'].copy()
+    writer.writerow(["sales", "date", "region"])
 
-            # Calculate sales
-            pink_morsels['Sales'] = pink_morsels['quantity'] * pink_morsels['price']
+    """ Loop through files"""
+    for file_name in os.listdir(DATA_DIRECTORY):
+        if file_name.endswith(".csv"):
+            file_path = os.path.join(DATA_DIRECTORY, file_name)
 
-            # Keep only relevant columns
-            filtered = pink_morsels[['Sales', 'date', 'region']]
-            data_frames.append(filtered)
+            with open(file_path, "r") as input_file:
+                reader = csv.reader(input_file)
 
-    return data_frames
+                """ Skip header row"""
+                next(reader)
 
+                for row in reader:
+                    if len(row) < 5:
+                        continue  # Skip malformed rows
 
-def save_combined_data(data_frames: List[pd.DataFrame],
-                       output_file: str) -> None:
-   """
-    Combine all DataFrames and save to a single CSV file.
+                    product = row[0]
+                    raw_price = row[1]
+                    quantity = row[2]
+                    transaction_date = row[3]
+                    region = row[4]
 
-    Args:
-        data_frames (List[pd.DataFrame]): List of cleaned DataFrames.
-        output_file (str): Path to the output CSV file.
-    """
-    combined_df = pd.concat(data_frames, ignore_index=True)
-    combined_df.to_csv(output_file, index=False)
-    print(f" Output saved to {output_file}")
+                    if product.lower() == "pink morsel":
+                        try:
+                            price = float(raw_price.replace("$", ""))
+                            sales = price * int(quantity)
+                            writer.writerow([sales, transaction_date, region])
+                        except ValueError:
+                            continue  # Skip rows with bad number formatting
 
-
-def main() -> None:
-    """
-    Main function to execute the data processing pipeline.
-    """
-    data_dir = 'data'
-    output_file = 'formatted_sales_data.csv'
-    filtered_data = load_csv_files(data_dir)
-    save_combined_data(filtered_data, output_file)
-
-        
-if __name__ == '__main__':
-    main()
+print("✅ Output saved to data/formatted_sales_data.csv")
