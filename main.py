@@ -42,7 +42,7 @@ def save_combined_data(data_frames: List[pd.DataFrame],
     """
     combined_df = pd.concat(data_frames, ignore_index=True)
     combined_df.to_csv(output_file, index=False)
-    print(f"✅ Output saved to {output_file}")
+    print(f" Output saved to {output_file}")
 
 
 def main() -> None:
