@@ -6,7 +6,7 @@ An interactive data visualization dashboard built with [Dash](https://dash.plotl
 
 ## 📸 Preview
 
-![App Preview](https://imgur.com/gallery/pink-morel-TkFpNNb#CXV9MCK)
+![App Preview]<blockquote class="imgur-embed-pub" lang="en" data-id="a/TkFpNNb"  ><a href="//imgur.com/a/TkFpNNb">Pink Morel</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 ---
 
