@@ -7,101 +7,88 @@ Features:
 - Loads cleaned sales data from a CSV file.
 - Displays a line chart of daily sales over time.
 - Allows filtering of sales data by region using a radio button
-  (options: All, North, East, South, West).
+(options: All, North, East, South, West).
 - Highlights the price increase on January 15, 2021
-  with a red dashed vertical line.
+with a red dashed vertical line.
 - Uses Dash callbacks to update the chart dynamically based on selected region.
-- Runs the app locally in your browser at http://localhost:8050.
+- Runs the app locally in your browser at http: // localhost: 8050.
 """
 
-
-import dash
-from dash import dcc, html, Input, Output
+import os
 import pandas as pd
+from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
 
-
-class PinkMorselApp:
-    def __init__(self):
-        """Initialize the Dash app"""
-        self.app = dash.Dash(__name__)
-        self.df = self._load_data()
-        self._configure_layout()
-        self._register_callbacks()
-
-    def _load_data(self):
-        """Load and process the formatted sales data"""
-        df = pd.read_csv("formatted_sales_data.csv")
-        df["date"] = pd.to_datetime(df["date"])
-        df = df.sort_values("date")
-        return df
-
-    def _create_figure(self, region):
-        """Create a line chart filtered by region, with a vertical line"""
-        if region != "all":
-            filtered_df = self.df[self.df["region"] == region]
-        else:
-            filtered_df = self.df
-
-        fig = px.line(
-            filtered_df,
-            x="date",
-            y="Sales",
-            color="region",
-            title="Pink Morsel Sales Over Time",
-            labels={"date": "Date", "Sales": "Sales Amount (R)"}
-        )
-
-        fig.add_vline(
-            x=pd.to_datetime("2021-01-15"),
-            line_dash="dash",
-            line_color="red",
-            annotation_text="Price Increase",
-            annotation_position="top left"
-        )
-
-        return fig
-
-    def _configure_layout(self):
-        """Define the app layout"""
-        self.app.layout = html.Div(style={"fontFamily": "Arial",
-                                          "padding": "20px"}, children=[
-            html.H1("🧁 Pink Morsel Sales Visualiser",
-                    style={"color": "#D6336C"}),
-
-            html.Div([
-                html.Label("Select Region:", style={"fontWeight": "bold"}),
-                dcc.RadioItems(
-                    id="region-selector",
-                    options=[
-                        {"label": "All", "value": "all"},
-                        {"label": "North", "value": "north"},
-                        {"label": "East", "value": "east"},
-                        {"label": "South", "value": "south"},
-                        {"label": "West", "value": "west"},
-                    ],
-                    value="all",
-                    labelStyle={"display": "inline-block",
-                                "margin-right": "15px"}
-                )
-            ], style={"marginBottom": "20px"}),
-
-            dcc.Graph(id="sales-line-chart")
-        ])
-
-    def _register_callbacks(self):
-        """Define the callback for interactivity"""
-        @self.app.callback(
-            Output("sales-line-chart", "figure"),
-            Input("region-selector", "value")
-        )
-        def update_figure(selected_region):
-            return self._create_figure(selected_region)
-
-    def run(self):
-        """Run app on localhost"""
-        self.app.run_server(debug=True, host="0.0.0.0", port=8050)
+"""" Constants"""
+DATA_PATH = "./formatted_sales_data.csv"
+COLORS = {"primary": "#FEDBFF", "secondary": "#D598EB", "font": "#522A61"}
+"""" Load and prepare data"""
+data = pd.read_csv(DATA_PATH)
+data["date"] = pd.to_datetime(data["date"])
+data = data.sort_values(by="date")
+""" Initialize Dash app"""
+dash_app = Dash(__name__)
+""" Helper to generate the chart"""
 
 
-if __name__ == "__main__":
-    PinkMorselApp().run()
+def generate_figure(chart_data):
+    fig = px.line(
+        chart_data,
+        x="date",
+        y="Sales",  # Sales amount in dollar
+        title="Pink Morsel Sales",
+        labels={
+            "date": "Date",
+            "Sales": "Sales Amount ($)"
+        })
+    fig.update_layout(plot_bgcolor=COLORS["secondary"],
+                      paper_bgcolor=COLORS["primary"],
+                      font_color=COLORS["font"])
+    return fig
+
+
+""" Initial graph"""
+visualization = dcc.Graph(id="visualization", figure=generate_figure(data))
+""" Header"""
+header = html.H1(" Pink Morsel Visualizer",
+                 id="header",
+                 style={
+                     "background-color": COLORS["secondary"],
+                     "color": COLORS["font"],
+                     "padding": "1rem",
+                     "border-radius": "20px"
+                 })
+"""" Region picker (set default to "all")"""
+region_picker = dcc.RadioItems(["north", "east", "south", "west", "all"],
+                               "all",
+                               id="region_picker",
+                               inline=True,
+                               style={"margin": "1rem"})
+region_picker_wrapper = html.Div([region_picker], style={"font-size": "120%"})
+"""" Callback to update chart based on region"""
+
+
+@dash_app.callback(Output("visualization", "figure"),
+                   Input("region_picker", "value"))
+def update_graph(region):
+    if region == "all":
+        filtered_data = data
+    else:
+        filtered_data = data[data["region"] == region]
+    return generate_figure(filtered_data)
+
+
+"""" Define layout"""
+dash_app.layout = html.Div(
+    [header, visualization, region_picker_wrapper],
+    style={
+        "textAlign": "center",
+        "background-color": COLORS["primary"],
+        "padding": "2rem",
+        "border-radius": "20px",
+        "min-height": "100vh"
+    })
+""" Run the server"""
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8050))
+    dash_app.run(debug=True, host="0.0.0.0", port=port)
