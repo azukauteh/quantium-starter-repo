@@ -1,18 +1,22 @@
 """
-This code creates a web dashboard using Dash to visualize
+This code creates an interactive web dashboard using Dash to visualize
 sales data for Soul Foods’ Pink Morsel product.
 
-It does the following:
+Features:
 
 - Loads cleaned sales data from a CSV file.
-- Displays a line chart of daily sales over time, grouped by region.
-- Highlights the date when the price increased — January 15, 2021
- — with a red dashed line.
+- Displays a line chart of daily sales over time.
+- Allows filtering of sales data by region using a radio button
+  (options: All, North, East, South, West).
+- Highlights the price increase on January 15, 2021
+  with a red dashed vertical line.
+- Uses Dash callbacks to update the chart dynamically based on selected region.
 - Runs the app locally in your browser at http://localhost:8050.
 """
 
+
 import dash
-from dash import dcc, html
+from dash import dcc, html, Input, Output
 import pandas as pd
 import plotly.express as px
 
@@ -21,7 +25,9 @@ class PinkMorselApp:
     def __init__(self):
         """Initialize the Dash app"""
         self.app = dash.Dash(__name__)
+        self.df = self._load_data()
         self._configure_layout()
+        self._register_callbacks()
 
     def _load_data(self):
         """Load and process the formatted sales data"""
@@ -30,15 +36,18 @@ class PinkMorselApp:
         df = df.sort_values("date")
         return df
 
-    def _create_figure(self, df):
-        """Create a line chart and add a vertical line
-             on the price change date"""
-        df["date"] = df["date"].astype(str)
+    def _create_figure(self, region):
+        """Create a line chart filtered by region, with a vertical line"""
+        if region != "all":
+            filtered_df = self.df[self.df["region"] == region]
+        else:
+            filtered_df = self.df
 
         fig = px.line(
-            df,
+            filtered_df,
             x="date",
             y="Sales",
+            color="region",
             title="Pink Morsel Sales Over Time",
             labels={"date": "Date", "Sales": "Sales Amount (R)"}
         )
@@ -54,18 +63,44 @@ class PinkMorselApp:
         return fig
 
     def _configure_layout(self):
-        """Load data, create figure, and define app layout"""
-        df = self._load_data()
-        fig = self._create_figure(df)
+        """Define the app layout"""
+        self.app.layout = html.Div(style={"fontFamily": "Arial",
+                                          "padding": "20px"}, children=[
+            html.H1("🧁 Pink Morsel Sales Visualiser",
+                    style={"color": "#D6336C"}),
 
-        self.app.layout = html.Div(children=[
-            html.H1("🧁 Pink Morsel Sales Visualiser"),
-            dcc.Graph(id="sales-line-chart", figure=fig)
+            html.Div([
+                html.Label("Select Region:", style={"fontWeight": "bold"}),
+                dcc.RadioItems(
+                    id="region-selector",
+                    options=[
+                        {"label": "All", "value": "all"},
+                        {"label": "North", "value": "north"},
+                        {"label": "East", "value": "east"},
+                        {"label": "South", "value": "south"},
+                        {"label": "West", "value": "west"},
+                    ],
+                    value="all",
+                    labelStyle={"display": "inline-block",
+                                "margin-right": "15px"}
+                )
+            ], style={"marginBottom": "20px"}),
+
+            dcc.Graph(id="sales-line-chart")
         ])
+
+    def _register_callbacks(self):
+        """Define the callback for interactivity"""
+        @self.app.callback(
+            Output("sales-line-chart", "figure"),
+            Input("region-selector", "value")
+        )
+        def update_figure(selected_region):
+            return self._create_figure(selected_region)
 
     def run(self):
         """Run app on localhost"""
-        self.app.run(debug=True, host="0.0.0.0", port=8050)
+        self.app.run_server(debug=True, host="0.0.0.0", port=8050)
 
 
 if __name__ == "__main__":
