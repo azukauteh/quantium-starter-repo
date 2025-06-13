@@ -34,10 +34,15 @@ An interactive data visualization dashboard built with Dash and Plotly, designed
 
 ## 🗂️ Project Structure
 
-── App.py # Main dashboard app
-├── formatted_data.csv # Preprocessed sales data
-├── requirements.txt # Python dependencies
-└── README.md  #You're here
+── app.py -> Main dashboard app
+
+├── formatted_data.csv -> Preprocessed sales data
+
+├── main.py -> Python dependencies
+
+├── test_app.py -> Ensuring it functions correctly and meets requirements.
+
+└── README.md  -> You're here
 
 
 ---
