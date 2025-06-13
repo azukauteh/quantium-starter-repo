@@ -42,7 +42,7 @@ An interactive data visualization dashboard built with Dash and Plotly, designed
 
 ---
 
-### 🚀 Getting Started
+### 🚀 Getting Started:
 
 ## 🟣 Option 1: Run on Replit
 
@@ -62,6 +62,7 @@ An interactive data visualization dashboard built with Dash and Plotly, designed
    cd quantium-starter-repo
 
 2. Install dependencies:
+```bash
    python3 App.py
 
 📊 Data Source
