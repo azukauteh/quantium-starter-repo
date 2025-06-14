@@ -1,4 +1,13 @@
- """test_app.py"""
+""" Add test_app.py with basic Dash component tests
+
+Includes tests to verify the presence of:
+- Header
+- Visualization graph
+- Region picker
+
+Uses Dash testing framework with pytest.
+
+"""
 
 import pytest
 from dash.testing.application_runners import import_app
@@ -15,7 +24,7 @@ def test_header_is_present(dash_duo):
 
 @pytest.mark.usefixtures("dash_duo")
 def test_visualization_is_present(dash_duo):
-    app = import_app("App")
+    app = import_app("app")
     dash_duo.start_server(app.dash_app)
 
     graph = dash_duo.find_element("#visualization")
@@ -24,9 +33,8 @@ def test_visualization_is_present(dash_duo):
 
 @pytest.mark.usefixtures("dash_duo")
 def test_region_picker_is_present(dash_duo):
-    app = import_app("App")
+    app = import_app("app")
     dash_duo.start_server(app.dash_app)
 
     radio = dash_duo.find_element("#region_picker")
     assert radio is not None
-
