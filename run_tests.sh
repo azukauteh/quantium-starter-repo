@@ -1,16 +1,17 @@
 #!/bin/bash
 
-""" Activate the virtual environment"""
-source venv/bin/activate
+""" run the test suite"""
+python -m pytest test_app.py
 
-""" Run the test suite"""
-pytest test_app.py
+""" collect exit code from pytest
+   exit code is 0 if all tests pass
+"""
+PYTEST_EXIT_CODE=$?
 
-""" Check the exit status of pytest"""
-if [ $? -eq 0 ]; then
-    echo "COngratulation: All tests passed."
-    exit 0
+""" return exit code 0 if all tests pass or 1 otherwise"""
+if [ $PYTEST_EXIT_CODE -eq 0 ]
+then
+  exit 0
 else
-    echo "Error: Some tests failed."
-    exit 1
+  exit 1
 fi
