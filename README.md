@@ -34,16 +34,19 @@ An interactive data visualization dashboard built with Dash and Plotly, designed
 
 ## 🗂️ Project Structure
 
-── app.py -> Main dashboard app
+├── app.py               # Dash app
 
-├── formatted_data.csv -> Preprocessed sales data
+├── formatted_data.csv   # Cleaned sales data
 
-├── main.py -> Python dependencies
+├── main.py              # Optional: installs dependencies
 
-├── test_app.py -> Ensuring it functions correctly and meets requirements.
+├── requirements.txt     # Dependencies
 
-└── README.md  -> You're here
+├── run_tests.sh         # Bash script for CI testing
 
+├── test_app.py          # Dash tests
+
+└── README.md            # You're here!
 
 ---
 
@@ -64,11 +67,11 @@ An interactive data visualization dashboard built with Dash and Plotly, designed
 1. Clone the repository:
    ```bash
    git clone https://github.com/azukauteh/quantium-starter-repo.git
-   cd quantium-starter-repo
+   
 
 2. Install dependencies:
 ```bash
-   python3 App.py
+   ./requirements.txt
 
 📊 Data Source
 
