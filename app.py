@@ -35,11 +35,11 @@ def generate_figure(chart_data):
     fig = px.line(
         chart_data,
         x="date",
-        y="Sales",  # Sales amount in dollar
+        y="Sales",  
         title="Pink Morsel Sales",
         labels={
             "date": "Date",
-            "Sales": "Sales Amount ($)"
+            "Sales": "Sales Amount ($)"      # Sales amount in dollar
         })
     fig.update_layout(plot_bgcolor=COLORS["secondary"],
                       paper_bgcolor=COLORS["primary"],
